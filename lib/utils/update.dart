@@ -16,6 +16,15 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:material_ui/material_ui.dart';
 
 abstract final class Update {
+  // A release is published after its APK is built, so its GitHub creation time
+  // alone cannot distinguish the installed version from a genuine update.
+  static bool isCurrentRelease(
+    String tag,
+    int releaseTime, {
+    String version = BuildConfig.versionName,
+    int buildTime = BuildConfig.buildTime,
+  }) => tag == version || buildTime >= releaseTime;
+
   // 检查更新
   static Future<void> checkUpdate([bool isAuto = true]) async {
     if (kDebugMode) return;
@@ -37,7 +46,7 @@ abstract final class Update {
       final data = res.data[0];
       final int latest =
           DateTime.parse(data['created_at']).millisecondsSinceEpoch ~/ 1000;
-      if (BuildConfig.buildTime >= latest) {
+      if (isCurrentRelease(data['tag_name'] as String, latest)) {
         if (!isAuto) {
           SmartDialog.showToast('已是最新版本');
         }

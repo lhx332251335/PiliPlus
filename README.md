@@ -1,3 +1,5 @@
+> **PiliPlus PRM 个人修改版**：读取 PRM 已有观看记录，在视频封面显示进度和已看标记。Android 包名独立，可与上游原版并存。配置、隐私边界和维护说明见 [PRM 使用说明](docs/PRM.md)。原项目说明与致谢保留如下。
+
 <div align="center">
     <img width="200" height="200" src="assets/images/logo/logo.png">
 </div>
@@ -215,7 +217,7 @@
 
 ## 下载
 
-可以从 [Releases](https://github.com/bggRGjQaUbCoE/PiliPlus/releases) 下载，或克隆仓库拉取代码后在本地编译。
+PRM 修改版从[本仓库 Releases](https://github.com/lhx332251335/PiliPlus/releases) 下载；上游原版从[上游 Releases](https://github.com/bggRGjQaUbCoE/PiliPlus/releases) 下载。
 
 <br/>
 

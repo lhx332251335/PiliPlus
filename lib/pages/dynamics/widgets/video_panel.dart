@@ -5,6 +5,8 @@ import 'package:PiliPlus/common/widgets/image/network_img_layer.dart';
 import 'package:PiliPlus/common/widgets/svg/play_icon.dart';
 import 'package:PiliPlus/models/common/badge_type.dart';
 import 'package:PiliPlus/models/dynamics/result.dart';
+import 'package:PiliPlus/prm/overlay.dart';
+import 'package:PiliPlus/prm/video_id.dart';
 import 'package:PiliPlus/utils/num_utils.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -46,79 +48,84 @@ Widget videoSeasonWidget(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (video.cover case final cover?)
-          Stack(
-            clipBehavior: Clip.none,
-            children: [
-              LayoutBuilder(
-                builder: (context, constraints) => NetworkImgLayer(
-                  width: constraints.maxWidth,
-                  height: constraints.maxWidth / Style.aspectRatio,
-                  src: cover,
-                  quality: 40,
-                ),
-              ),
-              if (video.badge?.text case final badge?)
-                PBadge(
-                  text: badge,
-                  top: 8.0,
-                  right: 10.0,
-                  bottom: null,
-                  left: null,
-                  type: switch (badge) {
-                    '充电专属' => PBadgeType.error,
-                    _ => PBadgeType.primary,
-                  },
-                ),
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: Container(
-                  height: 70,
-                  alignment: Alignment.bottomLeft,
-                  padding: const EdgeInsets.fromLTRB(10, 0, 8, 8),
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.transparent,
-                        Colors.black54,
-                      ],
-                    ),
-                    borderRadius: .vertical(bottom: Style.imgRadius),
+          PrmProgressOverlay(
+            videoId: PrmVideoId.dynamicCard(
+              type: item.type,
+              bvid: video.bvid,
+              episodeId: video.epid,
+            ),
+            topRightBadge: video.badge?.text,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                LayoutBuilder(
+                  builder: (context, constraints) => NetworkImgLayer(
+                    width: constraints.maxWidth,
+                    height: constraints.maxWidth / Style.aspectRatio,
+                    src: cover,
+                    quality: 40,
                   ),
-                  child: DefaultTextStyle.merge(
-                    style: TextStyle(
-                      fontSize: theme.textTheme.labelMedium!.fontSize,
-                      color: Colors.white,
+                ),
+                if (video.badge?.text case final badge?)
+                  PBadge(
+                    text: badge,
+                    top: 8.0,
+                    right: 10.0,
+                    bottom: null,
+                    left: null,
+                    type: switch (badge) {
+                      '充电专属' => PBadgeType.error,
+                      _ => PBadgeType.primary,
+                    },
+                  ),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    height: 70,
+                    alignment: Alignment.bottomLeft,
+                    padding: const EdgeInsets.fromLTRB(10, 0, 8, 8),
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [Colors.transparent, Colors.black54],
+                      ),
+                      borderRadius: .vertical(bottom: Style.imgRadius),
                     ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        if (video.durationText case final durationText?) ...[
-                          DecoratedBox(
-                            decoration: const BoxDecoration(
-                              color: Colors.black45,
-                              borderRadius: .all(.circular(4)),
+                    child: DefaultTextStyle.merge(
+                      style: TextStyle(
+                        fontSize: theme.textTheme.labelMedium!.fontSize,
+                        color: Colors.white,
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          if (video.durationText case final durationText?) ...[
+                            DecoratedBox(
+                              decoration: const BoxDecoration(
+                                color: Colors.black45,
+                                borderRadius: .all(.circular(4)),
+                              ),
+                              child: Text(' $durationText '),
                             ),
-                            child: Text(' $durationText '),
-                          ),
-                          const SizedBox(width: 6),
+                            const SizedBox(width: 6),
+                          ],
+                          if (video.stat case final stat?) ...[
+                            Text('${NumUtils.numFormat(stat.play)}播放'),
+                            const SizedBox(width: 6),
+                            Text('${NumUtils.numFormat(stat.danmu)}弹幕'),
+                          ],
+                          const Spacer(),
+                          const PlayIcon(size: 50),
                         ],
-                        if (video.stat case final stat?) ...[
-                          Text('${NumUtils.numFormat(stat.play)}播放'),
-                          const SizedBox(width: 6),
-                          Text('${NumUtils.numFormat(stat.danmu)}弹幕'),
-                        ],
-                        const Spacer(),
-                        const PlayIcon(size: 50),
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         if (video.title case final title?)
           Text(

@@ -8,6 +8,8 @@ import 'package:PiliPlus/http/search.dart';
 import 'package:PiliPlus/models/home/rcmd/result.dart';
 import 'package:PiliPlus/models/model_rec_video_item.dart';
 import 'package:PiliPlus/models_new/video/video_detail/dimension.dart';
+import 'package:PiliPlus/prm/overlay.dart';
+import 'package:PiliPlus/prm/video_id.dart';
 import 'package:PiliPlus/utils/app_scheme.dart';
 import 'package:PiliPlus/utils/date_utils.dart';
 import 'package:PiliPlus/utils/duration_utils.dart';
@@ -24,11 +26,7 @@ class VideoCardV extends StatelessWidget {
   final BaseRcmdVideoItemModel videoItem;
   final VoidCallback? onRemove;
 
-  const VideoCardV({
-    super.key,
-    required this.videoItem,
-    this.onRemove,
-  });
+  const VideoCardV({super.key, required this.videoItem, this.onRemove});
 
   Future<void> onPushDetail() async {
     switch (videoItem.goto) {
@@ -104,26 +102,33 @@ class VideoCardV extends StatelessWidget {
                     builder: (context, boxConstraints) {
                       double maxWidth = boxConstraints.maxWidth;
                       double maxHeight = boxConstraints.maxHeight;
-                      return Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          NetworkImgLayer(
-                            src: videoItem.cover,
-                            width: maxWidth,
-                            height: maxHeight,
-                            borderRadius: const .vertical(top: .circular(12)),
-                          ),
-                          if (videoItem.duration > 0)
-                            PBadge(
-                              bottom: 6,
-                              right: 7,
-                              size: .small,
-                              type: .gray,
-                              text: DurationUtils.formatDuration(
-                                videoItem.duration,
-                              ),
+                      return PrmProgressOverlay(
+                        videoId: PrmVideoId.recommendation(
+                          goto: videoItem.goto,
+                          bvid: videoItem.bvid,
+                          episodeId: videoItem.param,
+                        ),
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            NetworkImgLayer(
+                              src: videoItem.cover,
+                              width: maxWidth,
+                              height: maxHeight,
+                              borderRadius: const .vertical(top: .circular(12)),
                             ),
-                        ],
+                            if (videoItem.duration > 0)
+                              PBadge(
+                                bottom: 6,
+                                right: 7,
+                                size: .small,
+                                type: .gray,
+                                text: DurationUtils.formatDuration(
+                                  videoItem.duration,
+                                ),
+                              ),
+                          ],
+                        ),
                       );
                     },
                   ),
@@ -228,16 +233,10 @@ class VideoCardV extends StatelessWidget {
   Widget videoStat(ThemeData theme) {
     return Row(
       children: [
-        StatWidget(
-          type: .play,
-          value: videoItem.stat.view,
-        ),
+        StatWidget(type: .play, value: videoItem.stat.view),
         if (videoItem.goto != 'picture') ...[
           const SizedBox(width: 4),
-          StatWidget(
-            type: .danmaku,
-            value: videoItem.stat.danmu,
-          ),
+          StatWidget(type: .danmaku, value: videoItem.stat.danmu),
         ],
         if (videoItem is RcmdVideoItemModel) ...[
           const Spacer(),

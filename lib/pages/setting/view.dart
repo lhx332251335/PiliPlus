@@ -6,6 +6,7 @@ import 'package:PiliPlus/http/login.dart';
 import 'package:PiliPlus/models/common/setting_type.dart';
 import 'package:PiliPlus/pages/about/view.dart';
 import 'package:PiliPlus/pages/login/controller.dart';
+import 'package:PiliPlus/pages/prm_settings/view.dart';
 import 'package:PiliPlus/pages/setting/common_setting.dart';
 import 'package:PiliPlus/pages/setting/widgets/multi_select_dialog.dart';
 import 'package:PiliPlus/pages/webdav/view.dart';
@@ -180,6 +181,12 @@ class _SettingPageState extends State<SettingPage> {
       padding: EdgeInsets.only(bottom: padding.bottom + 100),
       children: [
         _buildSearchItem(theme),
+        ListTile(
+          onTap: () => Get.to(() => const PrmSettingsPage()),
+          leading: const Icon(Icons.visibility_outlined),
+          title: Text('PRM 只读进度', style: titleStyle),
+          subtitle: Text('同步 PRM 封面进度，不写入观看记录', style: subTitleStyle),
+        ),
         ..._items
             .take(_items.length - 1)
             .map(

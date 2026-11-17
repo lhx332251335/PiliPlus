@@ -12,6 +12,8 @@ import 'package:PiliPlus/models/common/stat_type.dart';
 import 'package:PiliPlus/models_new/fav/fav_detail/media.dart';
 import 'package:PiliPlus/pages/audio/view.dart';
 import 'package:PiliPlus/pages/fav_detail/controller.dart';
+import 'package:PiliPlus/prm/overlay.dart';
+import 'package:PiliPlus/prm/video_id.dart';
 import 'package:PiliPlus/utils/date_utils.dart';
 import 'package:PiliPlus/utils/duration_utils.dart';
 import 'package:PiliPlus/utils/page_utils.dart';
@@ -25,12 +27,8 @@ class FavVideoCardH extends StatelessWidget {
   final int? index;
   final BaseFavController? ctr;
 
-  const FavVideoCardH({
-    super.key,
-    required this.item,
-    this.index,
-    this.ctr,
-  }) : assert(ctr == null || index != null);
+  const FavVideoCardH({super.key, required this.item, this.index, this.ctr})
+    : assert(ctr == null || index != null);
 
   bool get isSort => ctr == null;
 
@@ -50,10 +48,7 @@ class FavVideoCardH extends StatelessWidget {
         );
         break;
       case 24:
-        PageUtils.viewPgc(
-          seasonId: item.ogv!.seasonId,
-          epId: item.id,
-        );
+        PageUtils.viewPgc(seasonId: item.ogv!.seasonId, epId: item.id);
         break;
       default:
         ctr!.onViewFav(item, index);
@@ -105,43 +100,50 @@ class FavVideoCardH extends StatelessWidget {
                   builder: (context, boxConstraints) {
                     double maxWidth = boxConstraints.maxWidth;
                     double maxHeight = boxConstraints.maxHeight;
-                    return Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        NetworkImgLayer(
-                          src: item.cover,
-                          width: maxWidth,
-                          height: maxHeight,
-                        ),
-                        PBadge(
-                          text: DurationUtils.formatDuration(item.duration),
-                          right: 6.0,
-                          bottom: 6.0,
-                          type: PBadgeType.gray,
-                        ),
-                        if (item.type == 12)
-                          const PBadge(
-                            text: '音频',
-                            top: 6.0,
-                            right: 6.0,
-                            type: PBadgeType.gray,
-                          )
-                        else
+                    return PrmProgressOverlay(
+                      videoId: PrmVideoId.favorite(
+                        type: item.type,
+                        bvid: item.bvid,
+                        episodeId: item.id,
+                      ),
+                      topRightBadge: item.type == 12
+                          ? '音频'
+                          : item.ogv?.typeName,
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          NetworkImgLayer(
+                            src: item.cover,
+                            width: maxWidth,
+                            height: maxHeight,
+                          ),
                           PBadge(
-                            text: item.ogv?.typeName,
-                            top: 6.0,
+                            text: DurationUtils.formatDuration(item.duration),
                             right: 6.0,
-                            bottom: null,
-                            left: null,
+                            bottom: 6.0,
+                            type: PBadgeType.gray,
                           ),
-                        if (!isSort)
-                          Positioned.fill(
-                            child: selectMask(
-                              colorScheme,
-                              item.checked,
+                          if (item.type == 12)
+                            const PBadge(
+                              text: '音频',
+                              top: 6.0,
+                              right: 6.0,
+                              type: PBadgeType.gray,
+                            )
+                          else
+                            PBadge(
+                              text: item.ogv?.typeName,
+                              top: 6.0,
+                              right: 6.0,
+                              bottom: null,
+                              left: null,
                             ),
-                          ),
-                      ],
+                          if (!isSort)
+                            Positioned.fill(
+                              child: selectMask(colorScheme, item.checked),
+                            ),
+                        ],
+                      ),
                     );
                   },
                 ),
@@ -167,9 +169,7 @@ class FavVideoCardH extends StatelessWidget {
               Text(
                 item.title!,
                 textAlign: TextAlign.start,
-                style: const TextStyle(
-                  letterSpacing: 0.3,
-                ),
+                style: const TextStyle(letterSpacing: 0.3),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -178,10 +178,7 @@ class FavVideoCardH extends StatelessWidget {
                   item.intro!,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: colorScheme.outline,
-                  ),
+                  style: TextStyle(fontSize: 13, color: colorScheme.outline),
                 ),
               const Spacer(),
               Text(
@@ -198,10 +195,7 @@ class FavVideoCardH extends StatelessWidget {
                 Row(
                   spacing: 8,
                   children: [
-                    StatWidget(
-                      type: StatType.play,
-                      value: item.cntInfo?.play,
-                    ),
+                    StatWidget(type: StatType.play, value: item.cntInfo?.play),
                     StatWidget(
                       type: StatType.danmaku,
                       value: item.cntInfo?.danmaku,

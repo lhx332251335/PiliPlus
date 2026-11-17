@@ -3,7 +3,7 @@ import 'package:PiliPlus/prm/overlay.dart';
 import 'package:PiliPlus/prm/service.dart';
 import 'package:PiliPlus/prm/progress.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class _MemoryStorage implements PrmProgressStorage {

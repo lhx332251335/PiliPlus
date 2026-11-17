@@ -1,5 +1,5 @@
 import 'package:PiliPlus/prm/service.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class PrmSettingsPage extends StatefulWidget {
   const PrmSettingsPage({super.key, this.service});

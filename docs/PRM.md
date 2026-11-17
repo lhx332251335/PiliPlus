@@ -48,7 +48,7 @@ B 站观看历史 → 现有同步程序 → PRM
 
 ```sh
 flutter analyze --no-fatal-infos
-flutter test test/prm_progress_test.dart test/prm_service_test.dart test/prm_transport_test.dart test/prm_overlay_test.dart test/prm_video_id_test.dart
+flutter test test/prm_*_test.dart
 ```
 
 测试覆盖模型与分 P 语义、分页/304/reset、离线保留、配置切换竞态、真实 HTTP 重定向隔离，以及实际组件的明暗主题、尺寸、点击和长按。

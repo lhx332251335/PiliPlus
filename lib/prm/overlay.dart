@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:PiliPlus/prm/progress.dart';
 import 'package:PiliPlus/prm/service.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A read-only PRM decoration. Never derives progress from Bilibili history.
 /// The optional listenable drives this same production widget in widget tests.
